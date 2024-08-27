@@ -4,7 +4,7 @@ import { secrets } from '@/config/constants';
 import { fetchHtml } from '@/utils/fetchHtml';
 import { MangaType } from '@/interfaces/mangaInterface';
 import { data } from 'cheerio/dist/commonjs/api/attributes';
-import { spaceToPlus } from '@/utils/helper';
+import { spaceToDash, spaceToPlus } from '@/utils/helper';
 
 export const getLatestMangaList = async (req: Request, res: Response) => {
     const url = secrets.BASE_URL;
@@ -101,6 +101,54 @@ export const searchManga = async (req: Request, res: Response) => {
     }
 };
 
+export const getMangaDetails = async (req: Request, res: Response) => {
+    const { title } = req.query;
+    if (!title) {
+        return res.status(404).json({
+            status: 'error',
+            statusText: 'title query parameter is required',
+        });
+    }
+    const url = `${secrets.BASE_URL}/manga/${spaceToDash(title.toString())}`;
+    try {
+        const html = await fetchHtml(url);
+        const $ = cheerio.load(html);
+
+        const genres: string[] = [];
+        $('.genres-content a').each((index, element) => {
+            genres.push($(element).text());
+        });
+        const mangaDetails: any = {
+            title: $('.post-title h1').text() ?? '',
+            image: $('.summary_image img').attr('src') ?? '',
+            averagerate: $('span#averagerate').text() ?? '',
+            author: $('.author-content a').text() ?? '',
+            artist: $('.artist-content a').text() ?? '',
+            genres,
+            postYear: $('.post-status .post-content_item .summary-content a').eq(0).text() ?? '',
+            status: $('.post-status .post-content_item .summary-content').eq(1).text() ?? '',
+            latestChapter: $('.wp-manga-chapter').eq(0).find('a').text() ?? '',
+        };
+        if (!mangaDetails.title) {
+            return res.status(404).json({
+                status: 'error',
+                statusText: 'No manga found',
+                data: {}
+            });
+        }
+        res.status(200).json({
+            status: 'success',
+            statusText: 'Manga details',
+            data: mangaDetails
+        });
+    } catch (error) {
+        console.error('Error fetching or parsing HTML:', error);
+        res.status(500).json({
+            status: 'error',
+            statusText: 'Internal server error',
+        });
+    }
+};
 
 
 

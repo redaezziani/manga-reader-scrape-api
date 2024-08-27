@@ -6,6 +6,7 @@
     "build": "tsc",
     "start": "node -r tsconfig-paths/register dist/index.js",
     "dev": "ts-node -r tsconfig-paths/register src/index.ts",
+    "nodemon": "nodemon -r tsconfig-paths/register src/index.ts",
     "test": "jest"
   },
   "keywords": [],
