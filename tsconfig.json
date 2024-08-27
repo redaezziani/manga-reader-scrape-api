@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+      "target": "ES6",                       
+      "module": "commonjs",                  
+      "strict": true,                        
+      "esModuleInterop": true,               
+      "skipLibCheck": true,                  
+      "forceConsistentCasingInFileNames": true,
+      "outDir": "./dist",                    
+      "rootDir": "./src",                    
+      "baseUrl": "./src",                    // Base directory for resolving non-relative module names
+      "paths": {
+        "@/*": ["*"]                         // Map '@' to the 'src' directory
+      }
+    },
+    "include": ["src/**/*"],
+    "exclude": ["node_modules", "**/*.test.ts"]
+  }
+  
