@@ -6,7 +6,7 @@ dotenv.config();
 describe('GET /api/v1/manga/latest', () => {
     it('should return a arry', async () => {
         // lets send this :ACCESS_TOKEN to the server and see if it will return a response
-      const response = await fetch('http://localhost:8080/api/v1/manga/latest',
+      const response = await fetch(`http://localhost:${process.env.PORT}/api/v1/manga/latest`,
         {
             method: 'GET',
             headers: {
@@ -20,7 +20,7 @@ describe('GET /api/v1/manga/latest', () => {
     });
 
     it('should return an array of objects', async () => {
-      const response = await fetch('http://localhost:8080/api/v1/manga/latest',
+      const response = await fetch(`http://localhost:${process.env.PORT}/api/v1/manga/latest`,
         {
             method: 'GET',
             headers: {
