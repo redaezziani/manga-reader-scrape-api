@@ -3,7 +3,6 @@ import * as cheerio from 'cheerio';
 import { secrets } from '@/config/constants';
 import { fetchHtml } from '@/utils/fetchHtml';
 import { MangaType } from '@/interfaces/mangaInterface';
-import { data } from 'cheerio/dist/commonjs/api/attributes';
 import { spaceToDash, spaceToPlus } from '@/utils/helper';
 
 export const getLatestMangaList = async (req: Request, res: Response) => {
@@ -140,6 +139,46 @@ export const getMangaDetails = async (req: Request, res: Response) => {
             status: 'success',
             statusText: 'Manga details',
             data: mangaDetails
+        });
+    } catch (error) {
+        console.error('Error fetching or parsing HTML:', error);
+        res.status(500).json({
+            status: 'error',
+            statusText: 'Internal server error',
+        });
+    }
+};
+
+
+export const getMangaChapterPages = async (req: Request, res: Response) => {
+    const { title, chapter } = req.query;
+    if (!title || !chapter) {
+        return res.status(404).json({
+            status: 'error',
+            statusText: 'title and chapter query parameters are required',
+        });
+    }
+
+    const url = `${secrets.BASE_URL}/manga/${spaceToDash(title.toString())}/${chapter}`;
+    try {
+        const html = await fetchHtml(url);
+        const $ = cheerio.load(html);
+        const pages: string[] = [];
+
+        $('.page-break  img').each((index, element) => {
+            pages.push($(element).attr('src') ?? '');
+        });
+        if (pages.length === 0) {
+            return res.status(404).json({
+                status: 'error',
+                statusText: 'No pages found',
+                data: []
+            });
+        }
+        res.status(200).json({
+            status: 'success',
+            statusText: 'Manga chapter pages',
+            data: pages
         });
     } catch (error) {
         console.error('Error fetching or parsing HTML:', error);
