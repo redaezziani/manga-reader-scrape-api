@@ -1,5 +1,5 @@
 ### Manga Reader Api 
-<!-- <img src="./readme/images/cover.png" alt="cover" width="100%"/> -->
+<img src="./readme/images/cover.png" alt="cover" width="100%"/>
 #### Description
 Backend API for a manga reader application. This API provides manga data, chapter data, and page data.
 The API is built using Node.js, Express.js, and Cheerio.js. The API scrapes.
