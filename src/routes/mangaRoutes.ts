@@ -1,13 +1,12 @@
 import express from 'express';
-import  {getLatestMangaList,searchManga,getMangaDetails,getMangaChapterPages,DownloadMangaChapter}  from '../controllers/mangaController';
+import  {getLatestMangaList,searchManga,getMangaDetails,getMangaChapterPages}  from '../controllers/mangaController';
 
-const router = express.Router();
+const mangaRouter = express.Router();
 
 
-router.get('/latest', getLatestMangaList);
-router.get('/search', searchManga);
-router.get('/details', getMangaDetails);
-router.get('/chapter', getMangaChapterPages);
-router.get('/download', DownloadMangaChapter);
+mangaRouter.get('/latest', getLatestMangaList);
+mangaRouter.get('/search', searchManga);
+mangaRouter.get('/details', getMangaDetails);
+mangaRouter.get('/chapter', getMangaChapterPages);
 
-export default router;
+export default mangaRouter;

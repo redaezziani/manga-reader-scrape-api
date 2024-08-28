@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+</html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style/style.css">
+    <script
+        src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
+    <title>
+        قارئ المانجا | <%= title %> | <%= chapter %>
+    </title>
+</head>
+
+<body class=" w-full flex justify-start p-6  items-center flex-col gap-6">
+    <div class="w-full flex justify-between items-center gap-6 max-w-5xl">
+        <div class=" w-full flex justify-start mb-4 items-start flex-col gap-6 max-w-5xl">
+            <h1 class="text-2xl font-bold">الصفحات</h1>
+            <div
+            class="w-full flex justify-between items-center gap-6 max-w-5xl"
+            >
+            <p class="text-lg text-right text-slate-500 flex gap-3 justify-start items-center">
+                <%= title %>
+                /
+                <%= chapter %>
+            </p>
+
+          <div class="flex gap-x-3 justify-center items-center">
+
+            <button
+            onclick="fetchPrevChapter()"
+            class="prev flex gap-x-1  justify-center text-slate-400 items-center text-slate-400 rounded-full size-8 bg-slate-100 items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#000000" fill="none">
+                <path d="M9.00005 6C9.00005 6 15 10.4189 15 12C15 13.5812 9 18 9 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            </button>
+
+
+            <button
+            onclick="fetchNextChapter()"
+            class=" next flex gap-x-1  justify-center text-slate-400 items-center text-slate-400 rounded-full size-8 bg-slate-100 items-center">
+               
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" color="#000000" fill="none">
+                <path d="M15 6C15 6 9.00001 10.4189 9 12C8.99999 13.5812 15 18 15 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            </button>
+            
+          </div>
+            </div>
+            
+        </div>
+
+          
+    </div>
+   
+    <div class=" w-full flex justify-center items-center flex-col gap-6 max-w-5xl">
+        <% pages.forEach(function(imagePath) { %>
+            <img
+            loading="lazy"
+            class=" w-full" src="<%= imagePath %>" alt="Manga Page" style="max-width: 100%; margin-bottom: 10px;">
+            <% }); %>
+    </div>
+</body>
+
+<script>
+    const Manga = {
+        chapter: parseInt('<%= chapter %>', 10),
+        title: '<%= title %>'
+    };
+
+    const fetchNextChapter = async () => {
+        const nextChapter = Manga.chapter + 1;
+        const response = await fetch(`http://localhost:8080/api/v1/manga/chapter?title=${Manga.title}&chapter=${nextChapter}`);
+        const data = await response.json();
+        console.log(data);
+        if (data.status === 'success') {
+            window.location.href = `/view-images?title=${Manga.title}&chapter=${nextChapter}&pages=${encodeURIComponent(data.data.join(','))}`;
+        } else {
+            console.error(data.statusText);
+        }
+    };
+
+    const fetchPrevChapter = async () => {
+        const prevChapter = Manga.chapter - 1;
+        const response = await fetch(`http://localhost:8080/api/v1/manga/chapter?title=${Manga.title}&chapter=${prevChapter}`);
+        const data = await response.json();
+        console.log(data);
+        if (data.status === 'success') {
+            // Redirect to /view-images with new chapter data
+            window.location.href = `/view-images?title=${Manga.title}&chapter=${prevChapter}&pages=${encodeURIComponent(data.data.join(','))}`;
+        } else {
+            console.error(data.statusText);
+        }
+    };
+</script>
+
+</html>
