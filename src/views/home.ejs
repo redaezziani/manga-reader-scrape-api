@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="صفحة وصف الموقع" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content="Astro" />
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap");
+
+        body {
+            font-family: "Tajawal", sans-serif;
+            direction: rtl;
+            text-align: right;
+        }
+    </style>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp,container-queries"></script>
+    <title>مطاردة المانجا</title>
+</head>
+<body class="w-full min-h-screen bg-zinc-900 text-zinc-50 overflow-x-hidden flex flex-col gap-4 justify-center items-center relative">
+    <div class="w-96 h-32 bg-amber-400/30 -z-[1] absolute top-0 left-0 rounded-full blur-[180px]"></div>
+    <div class="h-screen -z-[1] grid-rows-6 absolute w-full top-0 left-0 grid grid-cols-6 gap-3">
+        <span class="w-1 border-l row-span-6 col-start-2 border-zinc-400/35 border-dashed"></span>
+        <span class="w-full absolute border-t top-16 h-1 border-zinc-400/35 border-dashed"></span>
+    </div>
+
+    <header class="flex justify-end z-[99] items-center gap-2 fixed p-2 top-2 lg:max-w-7xl w-full">
+        <div class="flex">
+            <ul class="flex px-6 py-2 rounded-full flex-wrap justify-start items-center gap-x-3">
+                <li class="text-sm text-zinc-100/55 font-medium cursor-pointer capitalize">الصفحة الرئيسية</li>
+                <li class="text-sm text-zinc-100/55 font-medium cursor-pointer capitalize">حول</li>
+                <li class="text-sm text-zinc-100/55 font-medium cursor-pointer capitalize">المانجا</li>
+                <li class="text-sm text-zinc-100/55 font-medium cursor-pointer capitalize">اتصل بنا</li>
+            </ul>
+
+            <button
+                onclick="handleClick()"
+                id="register"
+                class="px-5 py-1.5 transition-all duration-100 ease-in-out text-zinc-800 focus:outline focus:outline-2 focus:outline-offset-2 flex gap-x-3 justify-center items-center focus:outline-zinc-100 font-semibold capitalize bg-zinc-100 rounded-full"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="none">
+                    <path d="M10 20.5675C6.57143 21.7248 3.71429 20.5675 2 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M10 22V18.7579C10 18.1596 10.1839 17.6396 10.4804 17.1699C10.6838 16.8476 10.5445 16.3904 10.1771 16.2894C7.13394 15.4528 5 14.1077 5 9.64606C5 8.48611 5.38005 7.39556 6.04811 6.4464C6.21437 6.21018 6.29749 6.09208 6.31748 5.9851C6.33746 5.87813 6.30272 5.73852 6.23322 5.45932C5.95038 4.32292 5.96871 3.11619 6.39322 2.02823C6.39322 2.02823 7.27042 1.74242 9.26698 2.98969C9.72282 3.27447 9.95075 3.41686 10.1515 3.44871C10.3522 3.48056 10.6206 3.41384 11.1573 3.28041C11.8913 3.09795 12.6476 3 13.5 3C14.3524 3 15.1087 3.09795 15.8427 3.28041C16.3794 3.41384 16.6478 3.48056 16.8485 3.44871C17.0493 3.41686 17.2772 3.27447 17.733 2.98969C19.7296 1.74242 20.6068 2.02823 20.6068 2.02823C21.0313 3.11619 21.0496 4.32292 20.7668 5.45932C20.6973 5.73852 20.6625 5.87813 20.6825 5.9851C20.7025 6.09207 20.7856 6.21019 20.9519 6.4464C21.6199 7.39556 22 8.48611 22 9.64606C22 14.1077 19.8661 15.4528 16.8229 16.2894C16.4555 16.3904 16.3162 16.8476 16.5196 17.1699C16.8161 17.6396 17 18.1596 17 18.7579V22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                التسجيل
+            </button>
+        </div>
+    </header>
+    <main class="flex max-w-7xl flex-col gap-3 p-6 mt-20 justify-start items-start ">
+        <h2 class="text-3xl font-bold text-zinc-100" title="list of manga">قائمة المانجا</h2>
+        <p class="text-lg text-zinc-100/75">مرحبا بكم في موقع مطاردة المانجا</p>
+
+        <div class="w-full grid grid-cols-5 gap-3">
+            <% data.data.forEach((manga) => { %>
+                <div class="w-full  bg-zinc-800/50 rounded-lg flex flex-col gap-2 p-2">
+                    <img src="<%= manga.image %>" alt="<%= manga.title %>" class="w-full  object-cover rounded-lg" />
+                  <div class=" flex-col gap-2 text-right  flex w-full justify-start items-start">
+                    <h3 class=" text-zinc-50 line-clamp-1"><%= manga.title %></h3>
+                    <p class="text-sm text-zinc-100/75"><%= manga.chapterNumer %></p>
+                    <p class="text-sm text-zinc-100/75"><%= manga.postedOn %></p>
+
+                  </div>
+                </div>
+            <% }) %>
+        </div>
+    </main>
+</body>
+</html>
+
+<script>
+    const handleClick = () => {
+        try {
+            // Redirect to GitHub OAuth
+            window.location.href = "http://localhost:8080/api/v1/auth/github";
+        } catch (error) {
+            console.error(error);
+        }
+    };
+</script>
