@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
 import Manga3asq from "@/service/manga/manga-3asq";
+import MangaTrend from "@/service/manga/manga-trend";
 import redisClient from "@/utils/redis";
 
 export const getLatestMangaList = async (req: Request, res: Response) => {
   let source = req.query.source;
   if (!source) {
-    source = "3asq";
+    source = "Trend";
   }
 
   let mangaService;
@@ -13,20 +14,23 @@ export const getLatestMangaList = async (req: Request, res: Response) => {
     case "3asq":
       mangaService = new Manga3asq();
       break;
+    case "Trend":
+        mangaService = new MangaTrend();
+        break;
     default:
-      mangaService = new Manga3asq();
+      mangaService = new MangaTrend();
       break;
   }
   const cacheKey = `latestManga:${source}`;
   try {
     const cacheData = await redisClient.get(cacheKey);
-    if (cacheData) {
-      return res.status(200).json({
-        status: "success",
-        statusText: "Latest manga list",
-        data: JSON.parse(cacheData),
-      });
-    }
+    // if (cacheData) {
+    //   return res.status(200).json({
+    //     status: "success",
+    //     statusText: "Latest manga list",
+    //     data: JSON.parse(cacheData),
+    //   });
+    // }
   } catch (error) {
     console.error("Error fetching data from Redis:", error);
   }
