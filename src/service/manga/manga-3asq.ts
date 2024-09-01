@@ -1,5 +1,6 @@
 import { MangaType } from "@/interfaces/3asq/mangaInterface";
 import { fetchHtml } from "@/utils/fetchHtml";
+import { spaceToDash } from "@/utils/helper";
 import * as cheerio from "cheerio";
 
 class Manga3asq  {
@@ -50,7 +51,12 @@ class Manga3asq  {
                     data: [],
                 };
             }
-            return mangaList;
+            return {
+                status: "success",
+                statusText: "Latest manga",
+                data: mangaList,
+            };
+            
         } catch (error) {
             console.log(error);
             return {
@@ -102,6 +108,53 @@ class Manga3asq  {
               statusText: "Internal server error",
             };
           }
+    }
+
+
+     async getMangaDetails(title: string) {
+        const url = `${this.baseURL}/manga/${spaceToDash(title.toString())}`;
+        try {
+          const html = await fetchHtml(url);
+          const $ = cheerio.load(html);
+      
+          const genres: string[] = [];
+          $(".genres-content a").each((index, element) => {
+            genres.push($(element).text());
+          });
+          const mangaDetails: any = {
+            title: $(".post-title h1").text() ?? "",
+            image: $(".summary_image img").attr("src") ?? "",
+            averagerate: $("span#averagerate").text() ?? "",
+            author: $(".author-content a").text() ?? "",
+            artist: $(".artist-content a").text() ?? "",
+            genres,
+            postYear:
+              $(".post-status .post-content_item .summary-content a").eq(0).text() ??
+              "",
+            status:
+              $(".post-status .post-content_item .summary-content").eq(1).text() ??
+              "",
+            latestChapter: $(".wp-manga-chapter").eq(0).find("a").text() ?? "",
+          };
+          if (!mangaDetails.title) {
+            return {
+              status: "error",
+              statusText: "No manga found",
+              data: {},
+            };
+          }
+          return {
+            status: "success",
+            statusText: "Manga details",
+            data: mangaDetails,
+          }
+        } catch (error) {
+          console.error("Error fetching or parsing HTML:", error);
+            return {
+                status: "error",
+                statusText: "Internal server error",
+            };
+        }
     }
 }
 
