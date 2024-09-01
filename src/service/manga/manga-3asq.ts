@@ -156,6 +156,39 @@ class Manga3asq  {
             };
         }
     }
+
+    async getMangaChapterPages(title: string, chapter: string) {
+        const url = `${this.baseURL}/manga/${spaceToDash(
+            title.toString()
+          )}/${chapter}`;
+          try {
+            const html = await fetchHtml(url);
+            const $ = cheerio.load(html);
+            const pages: string[] = [];
+        
+            $(".page-break  img").each((index, element) => {
+              pages.push($(element).attr("src") ?? "");
+            });
+            if (pages.length === 0) {
+                return {
+                    status: "error",
+                    statusText: "No pages found",
+                    data: [],
+                };
+            }
+            return {
+                status: "success",
+                statusText: "Manga chapter pages",
+                data: pages,
+            };
+          } catch (error) {
+            console.error("Error fetching or parsing HTML:", error);
+            return {
+                status: "error",
+                statusText: "Internal server error",
+            };
+          }
+    }
 }
 
 
