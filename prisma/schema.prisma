@@ -8,37 +8,27 @@ datasource db {
 }
 
 model User {
-  id             String    @id @default(uuid())
-  username       String?   @unique
-  profileImage   String?   // URL to profile image
-  providerId     String?   @unique
-  accounts       Account[] // For linking with third-party auth providers
-  sessions       Session[] // For managing sessions
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
-}
-
-model Account {
-  id                String   @id @default(uuid())
-  userId            String
-  user              User     @relation(fields: [userId], references: [id])
-  provider          String   // e.g., 'google', 'facebook', 'github'
-  providerAccountId String   @unique // Account ID from the auth provider
-  accessToken       String?  // For OAuth token management
-  refreshToken      String?  // For OAuth token management
-  expiresAt         Int?     // Token expiration time
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-
-  @@unique([provider, providerAccountId]) // Ensure one account per user per provider
+  id        String    @id @default(cuid())
+  email     String    @unique
+  name      String?
+  password  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  role      String    @default("user")
+  sessions  Session[]
 }
 
 model Session {
-  id           String   @id @default(uuid())
-  userId       String
-  user         User     @relation(fields: [userId], references: [id])
-  sessionToken String   @unique
+  id           String   @id @default(cuid())
+  accessToken  String   @unique
+  refreshToken String   @unique
   expiresAt    DateTime
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+
+  @@index([accessToken])
+  @@index([refreshToken])
+  @@index([expiresAt])
 }

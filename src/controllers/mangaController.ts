@@ -24,13 +24,13 @@ export const getLatestMangaList = async (req: Request, res: Response) => {
   const cacheKey = `latestManga:${source}`;
   try {
     const cacheData = await redisClient.get(cacheKey);
-    // if (cacheData) {
-    //   return res.status(200).json({
-    //     status: "success",
-    //     statusText: "Latest manga list",
-    //     data: JSON.parse(cacheData),
-    //   });
-    // }
+    if (cacheData) {
+      return res.status(200).json({
+        status: "success",
+        statusText: "Latest manga list",
+        data: JSON.parse(cacheData),
+      });
+    }
   } catch (error) {
     console.error("Error fetching data from Redis:", error);
   }
